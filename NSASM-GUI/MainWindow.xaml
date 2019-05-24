@@ -1,0 +1,53 @@
+﻿<Window x:Class="NSASM_GUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NSASM_GUI"
+        mc:Ignorable="d"
+        
+        xmlns:material="http://materialdesigninxaml.net/winfx/xaml/themes"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto"
+        
+        Title="NSASM-GUI" Height="480" Width="800" ResizeMode="NoResize" AllowsTransparency="True" WindowStyle="None" Background="{x:Null}" Icon="nsasm-gui-icon.ico">
+
+    <Grid>
+        <Rectangle x:Name="MainPanel" Fill="{DynamicResource MaterialDesignPaper}" Margin="4,4,4,4" RadiusX="4" RadiusY="4" MouseMove="MainPanel_MouseMove">
+            <Rectangle.Effect>
+                <DropShadowEffect BlurRadius="4" Color="{DynamicResource Accent700}" ShadowDepth="0"/>
+            </Rectangle.Effect>
+        </Rectangle>
+
+        <Label x:Name="Head" Content="NSASM-GUI" Width="Auto" Height="Auto" Margin="4,4,668,450" MouseMove="Head_MouseMove" FontSize="16" FontWeight="Bold"/>
+        <Label x:Name="HeadVer" Content="" Width="Auto" Height="Auto" Margin="4,20,540,435" MouseMove="Head_MouseMove" FontSize="12" Background="{x:Null}"/>
+
+        <Button x:Name="BtnClose" Style="{DynamicResource MaterialDesignFloatingActionButton}" HorizontalAlignment="Right" Width="36" Height="36" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="{x:Null}" Cursor="Arrow" Margin="0,4,4,0" Click="BtnClose_Click">
+            <material:PackIcon Kind="WindowClose" Width="24" Height="24" Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"/>
+        </Button>
+
+        <Button x:Name="BtnClear" Style="{DynamicResource MaterialDesignFloatingActionButton}" HorizontalAlignment="Right" Width="36" Height="36" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="{x:Null}" Cursor="Arrow" Margin="0,4,136,0" ToolTip="Clear code and output" Click="BtnClear_Click">
+            <material:PackIcon Kind="Refresh" Width="24" Height="24" Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"/>
+        </Button>
+
+        <Button x:Name="BtnRun" Style="{DynamicResource MaterialDesignFloatingActionButton}" HorizontalAlignment="Right" Width="36" Height="36" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="{x:Null}" Cursor="Arrow" Margin="0,4,100,0" ToolTip="Run script" Click="BtnRun_Click">
+            <material:PackIcon Kind="Play" Width="24" Height="24" Foreground="{DynamicResource PrimaryHueMidBrush}"/>
+        </Button>
+
+        <Button x:Name="BtnMake" Style="{DynamicResource MaterialDesignFloatingActionButton}" HorizontalAlignment="Right" Width="36" Height="36" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="{x:Null}" Cursor="Arrow" Margin="0,4,64,0" ToolTip="Gen executable" Click="BtnMake_Click">
+            <material:PackIcon Kind="ArrowDownBold" Width="24" Height="24" Foreground="{DynamicResource SecondaryAccentBrush}"/>
+        </Button>
+
+        <TextBox x:Name="OutputLine" Margin="405,45,345,10" Text="1" IsReadOnly="True" TextAlignment="Right" Foreground="{DynamicResource PrimaryHueMidBrush}"/>
+        <TextBox x:Name="CodeLine" Margin="10,45,740,10" Text="1" IsReadOnly="True" TextAlignment="Right" Foreground="{DynamicResource SecondaryAccentBrush}"/>
+
+        <TextBox x:Name="OutputBox" Margin="459,45,10,10" Text="" VerticalScrollBarVisibility="Auto" IsReadOnly="True" IsReadOnlyCaretVisible="True" TextWrapping="Wrap" ScrollViewer.ScrollChanged="OutputBox_ScrollChanged"  TextChanged="OutputBox_TextChanged"/>
+        <TextBox x:Name="CodeBox" Margin="64,45,405,10" Text="" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" AcceptsTab="True" AcceptsReturn="True" ScrollViewer.ScrollChanged="CodeBox_ScrollChanged" TextChanged="CodeBox_TextChanged"/>
+        <GridSplitter HorizontalAlignment="Stretch" Margin="399,45,399,10" Background="{DynamicResource SecondaryAccentBrush}"/>
+
+        <TextBox x:Name="PathBox" Margin="459,10,177,446" TextWrapping="Wrap" Text="" ToolTip="Output path"/>
+
+    </Grid>
+</Window>

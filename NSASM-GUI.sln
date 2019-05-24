@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28917.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSASM-GUI", "NSASM-GUI\NSASM-GUI.csproj", "{A2B4D814-0F6B-4BB4-9C2A-B447D9FCD29E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A2B4D814-0F6B-4BB4-9C2A-B447D9FCD29E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2B4D814-0F6B-4BB4-9C2A-B447D9FCD29E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2B4D814-0F6B-4BB4-9C2A-B447D9FCD29E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2B4D814-0F6B-4BB4-9C2A-B447D9FCD29E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D5E1EB8C-B070-4F2A-9B76-6416A618C578}
+	EndGlobalSection
+EndGlobal
