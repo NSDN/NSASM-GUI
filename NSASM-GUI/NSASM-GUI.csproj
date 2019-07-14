@@ -100,6 +100,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="nsasm.bin" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -111,6 +112,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="nsasm-gui-icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\nsasm.wav" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\nsasm.wav" />
