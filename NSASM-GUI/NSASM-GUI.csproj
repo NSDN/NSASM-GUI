@@ -64,8 +64,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="funcList.cs" />
     <Compile Include="InlineUtil.cs" />
     <Compile Include="NSASM.cs" />
+    <Compile Include="paramList.cs" />
     <Compile Include="Util.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -108,10 +110,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="nsasm.wav" />
+    <Resource Include="nsasm-gui-icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="nsasm-gui-icon.ico" />
+    <None Include="Resources\nsasm.wav" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

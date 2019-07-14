@@ -91,7 +91,7 @@ namespace NSASM_GUI
 
         private void BtnMake_Click(object sender, RoutedEventArgs e)
         {
-            const int OFFSET = 0x12D820, LENGTH = 0x8000;
+            const int OFFSET = 0x131E40, LENGTH = 0x8000;
             var bin = Properties.Resources.nsasmBin;
 
             __print("Original size: {0:G} KiB\n", bin.Length / 1024.0F);
