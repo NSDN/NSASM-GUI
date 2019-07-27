@@ -7,7 +7,7 @@ namespace dotNSASM
 {
     public partial class NSASM
     {
-        public const string Version = "0.60 (.NET Standard 1.1)";
+        public const string Version = "0.61 (.NET Standard 2.0)";
 
         public enum RegType
         {
@@ -75,6 +75,7 @@ namespace dotNSASM
                 string str = "M(\n";
                 foreach (Register key in Keys)
                 {
+                    if (this[key] is null) continue;
                     str += (key.ToString() + "->" + this[key].ToString() + "\n");
                 }
                 str += ")";
@@ -93,6 +94,12 @@ namespace dotNSASM
         protected Register[] regGroup;
         private Register stateReg;
         private Register prevDstReg;
+
+        private Register argReg;
+        public void SetArgument(Register reg)
+        {
+            argReg = new Register(reg);
+        }
 
         private Stack<int> backupReg;
         private int progSeg, tmpSeg;
@@ -324,13 +331,13 @@ namespace dotNSASM
                 {
                     register.type = RegType.CODE;
                     register.readOnly = true;
-                    String code = var.Substring(1, var.Length - 2);
+                    string code = var.Substring(1, var.Length - 2);
                     code = Util.DecodeLambda(code);
                     register.data = code;
                 }
                 else if (VerifyWord(var, WordType.MAP))
                 {
-                    String code = var.Substring(2, var.Length - 3);
+                    string code = var.Substring(2, var.Length - 3);
 
                     register = new Register();
                     register.type = RegType.MAP;
@@ -388,7 +395,7 @@ namespace dotNSASM
                     var args = Util.ParseArgs(res, ',');
                     for (int i = 0; i < args.Count; i++)
                         foreach (var it in strings)
-                            args[i].Replace(it.Key, it.Value);
+                            args[i] = args[i].Replace(it.Key, it.Value);
 
                     dst = src = ext = "";
                     if (args.Count > 0) dst = args[0];
@@ -558,7 +565,7 @@ namespace dotNSASM
             }
         }
 
-        protected virtual NSASM Instance(NSASM super, String[][] code)
+        protected virtual NSASM Instance(NSASM super, string[][] code)
         {
             return new NSASM(super, code);
         }
@@ -567,7 +574,7 @@ namespace dotNSASM
         {
             if (register == null) return null;
             if (register.type != RegType.CODE) return null;
-            String[][] code = Util.GetSegments(register.data.ToString());
+            string[][] code = Util.GetSegments(register.data.ToString());
             return Instance(this, code).Run();
         }
 
@@ -628,7 +635,7 @@ namespace dotNSASM
                 this.regGroup[i].Copy(super.regGroup[i]);
         }
 
-        private NSASM(NSASM super, String[][] code) : this(super.heapSize, super.stackSize, super.regCnt, code)
+        private NSASM(NSASM super, string[][] code) : this(super.heapSize, super.stackSize, super.regCnt, code)
         {
             CopyRegGroup(super);
         }
@@ -659,6 +666,7 @@ namespace dotNSASM
                 regGroup[i].data = 0;
             }
             useReg = regGroup[regCnt];
+            argReg = null;
 
             funcList = new Dictionary<string, Operator>();
             LoadFuncList();

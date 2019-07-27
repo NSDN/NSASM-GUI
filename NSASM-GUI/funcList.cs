@@ -1,9 +1,66 @@
 ﻿using System;
+using System.Threading;
+using System.Collections.Generic;
 
 namespace dotNSASM
 {
     public partial class NSASM
     {
+        protected class SafePool<T> : List<T>
+        {
+            private readonly object _lock = new object();
+
+            public SafePool() : base()
+            {
+            }
+
+            public new int Count
+            {
+                get
+                {
+                    try
+                    {
+                        Monitor.Enter(_lock);
+                        return base.Count;
+                    }
+                    finally
+                    {
+                        Monitor.Exit(_lock);
+                    }
+                }
+            }
+
+            public new void Add(T value)
+            {
+                Monitor.Enter(_lock);
+                base.Add(value);
+                Monitor.Exit(_lock);
+            }
+
+            public new void Insert(int index, T value)
+            {
+                Monitor.Enter(_lock);
+                base.Insert(index, value);
+                Monitor.Exit(_lock);
+            }
+
+            public new T this[int index]
+            {
+                get
+                {
+                    try
+                    {
+                        Monitor.Enter(_lock);
+                        return base[index];
+                    }
+                    finally
+                    {
+                        Monitor.Exit(_lock);
+                    }
+                }
+            }
+        }
+
         protected virtual void LoadFuncList()
         {
             funcList.Add("rem", (dst, src, ext) =>
@@ -136,7 +193,7 @@ namespace dotNSASM
                 if (src != null) return Result.ERR;
                 if (dst == null) return Result.ERR;
                 if (stackManager.Count >= stackSize) return Result.ERR;
-                stackManager.Push(dst);
+                stackManager.Push(new Register(dst));
                 return Result.OK;
             });
 
@@ -233,7 +290,7 @@ namespace dotNSASM
                 {
                     if (dst.type == RegType.STR)
                     {
-                        Util.Print(((String)dst.data).Substring(dst.strPtr));
+                        Util.Print(((string)dst.data).Substring(dst.strPtr));
                     }
                     else if (dst.type == RegType.CODE)
                     {
@@ -252,7 +309,7 @@ namespace dotNSASM
                         case 0x00:
                             if (src.type == RegType.STR)
                             {
-                                Util.Print(((String)src.data).Substring(src.strPtr));
+                                Util.Print(((string)src.data).Substring(src.strPtr));
                             }
                             else if (src.type == RegType.CODE)
                             {
@@ -266,7 +323,7 @@ namespace dotNSASM
                             Util.Print("[DEBUG] >>> ");
                             if (src.type == RegType.STR)
                             {
-                                Util.Print(((String)src.data).Substring(src.strPtr));
+                                Util.Print(((string)src.data).Substring(src.strPtr));
                             }
                             else if (src.type == RegType.CODE)
                             {
@@ -289,6 +346,16 @@ namespace dotNSASM
                 if (dst == null) return Result.ERR;
                 if (src != null)
                 {
+                    if (ext != null)
+                    {
+                        Util.Print(
+                            dst.data.ToString() +
+                            src.data.ToString() +
+                            ext.data.ToString() +
+                            '\n'
+                        );
+                        return Result.OK;
+                    }
                     if (dst.type == RegType.STR)
                     {
                         if (dst.readOnly) return Result.ERR;
@@ -296,8 +363,8 @@ namespace dotNSASM
                         {
                             if (dst.data.ToString().Contains("\n"))
                             {
-                                String[] parts = dst.data.ToString().Split('\n');
-                                String res = "";
+                                string[] parts = dst.data.ToString().Split('\n');
+                                string res = "";
                                 for (int i = 0; i < parts.Length - 1; i++)
                                 {
                                     res = res + parts[i];
@@ -325,8 +392,8 @@ namespace dotNSASM
                         {
                             if (dst.data.ToString().Contains("\n"))
                             {
-                                String[] parts = dst.data.ToString().Split('\n');
-                                String res = "";
+                                string[] parts = dst.data.ToString().Split('\n');
+                                string res = "";
                                 for (int i = 0; i < parts.Length - 1; i++)
                                 {
                                     res = res + parts[i];
@@ -352,7 +419,7 @@ namespace dotNSASM
                     if (dst == null) return Result.ERR;
                     if (dst.type == RegType.STR)
                     {
-                        Util.Print(((String)dst.data).Substring(dst.strPtr) + '\n');
+                        Util.Print(((string)dst.data).Substring(dst.strPtr) + '\n');
                     }
                     else if (dst.type == RegType.CODE)
                     {
@@ -806,7 +873,7 @@ namespace dotNSASM
                 if (src != null) return Result.ERR;
                 if (dst == null) return Result.ERR;
                 if (dst.type != RegType.STR) return Result.ERR;
-                if (!VerifyWord((String)dst.data, WordType.SEG)) return Result.ERR;
+                if (!VerifyWord((string)dst.data, WordType.SEG)) return Result.ERR;
                 string segBuf, target = (string)dst.data;
                 string[] codeKeys = new string[code.Keys.Count];
                 code.Keys.CopyTo(codeKeys, 0);
@@ -828,7 +895,7 @@ namespace dotNSASM
                 if (src != null) return Result.ERR;
                 if (dst == null) return Result.ERR;
                 if (dst.type != RegType.STR) return Result.ERR;
-                if (!VerifyWord((String)dst.data, WordType.SEG)) return Result.ERR;
+                if (!VerifyWord((string)dst.data, WordType.SEG)) return Result.ERR;
                 string segBuf, target = (string)dst.data;
                 string[] codeKeys = new string[code.Keys.Count];
                 code.Keys.CopyTo(codeKeys, 0);
@@ -875,7 +942,8 @@ namespace dotNSASM
                 return Result.OK;
             });
 
-            funcList.Add("eval", (dst, src, ext) => {
+            funcList.Add("eval", (dst, src, ext) =>
+            {
                 if (dst == null) return Result.ERR;
 
                 if (src == null) Eval(dst);
@@ -894,19 +962,53 @@ namespace dotNSASM
                 if (src == null) return Result.ERR;
                 if (ext == null) return Result.ERR;
 
-                if (dst.type != RegType.MAP) return Result.ERR;
+                if (dst.readOnly) return Result.ERR;
                 if (src.type != RegType.CODE) return Result.ERR;
-                if (ext.type != RegType.INT) return Result.ERR;
+                if (ext.type != RegType.MAP) return Result.ERR;
 
-                Register reg = new Register(), count = new Register();
-                count.type = RegType.INT; count.readOnly = false;
-                for (int i = 0; i < (int)ext.data; i++)
+                if (ext.data is Map map)
                 {
-                    count.data = i;
-                    if (funcList["eval"].Invoke(reg, src, null) == Result.ERR)
-                        return Result.ERR;
-                    if (funcList["put"].Invoke(dst, count, reg) == Result.ERR)
-                        return Result.ERR;
+                    if (map.Count != 0)
+                    {
+                        int cnt = map.Count;
+                        string[][] code = Util.GetSegments(src.data.ToString());
+                        List<Register> keys = new List<Register>(map.Keys);
+
+                        Thread[] threads = new Thread[cnt];
+                        SafePool<int> signPool = new SafePool<int>();
+                        SafePool<NSASM> runnerPool = new SafePool<NSASM>();
+                        SafePool<Register> outputPool = new SafePool<Register>();
+                        for (int i = 0; i < cnt; i++)
+                        {
+                            NSASM core = Instance(this, code);
+                            core.SetArgument(map[keys[i]]);
+                            runnerPool.Add(core);
+                            outputPool.Add(new Register());
+                        }
+                        for (int i = 0; i < cnt; i++)
+                        {
+                            threads[i] = new Thread(new ParameterizedThreadStart((arg) => {
+                                if (arg is int index)
+                                {
+                                    NSASM core = runnerPool[index];
+                                    outputPool.Insert(index, core.Run());
+                                    signPool.Add(index);
+                                }
+                            }));
+                        }
+
+                        for (int i = 0; i < cnt; i++)
+                            threads[i].Start(i);
+                        while (signPool.Count < cnt)
+                            funcList["nop"].Invoke(null, null, null);
+
+                        dst.type = RegType.MAP;
+                        dst.readOnly = false;
+                        Map res = new Map();
+                        for (int i = 0; i < cnt; i++)
+                            res.Add(keys[i], outputPool[i]);
+                        dst.data = res;
+                    }
                 }
 
                 return Result.OK;

@@ -14,6 +14,19 @@
         
         Title="NSASM-GUI" Height="480" Width="800" ResizeMode="NoResize" AllowsTransparency="True" WindowStyle="None" Background="{x:Null}" Icon="nsasm-gui-icon.ico">
 
+    <Window.Resources>
+        <RoutedUICommand x:Key="MakeCommand" Text="Make" />
+        <RoutedUICommand x:Key="RunCommand" Text="Run" />
+    </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="{StaticResource MakeCommand}" Executed="MakeCommand_Executed" />
+        <CommandBinding Command="{StaticResource RunCommand}" Executed="RunCommand_Executed" />
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Key="B" Modifiers="Ctrl" Command="{StaticResource MakeCommand}" />
+        <KeyBinding Key="R" Modifiers="Ctrl" Command="{StaticResource RunCommand}" />
+    </Window.InputBindings>
+
     <Grid>
         <Rectangle x:Name="MainPanel" Fill="{DynamicResource MaterialDesignPaper}" Margin="4,4,4,4" RadiusX="4" RadiusY="4" MouseMove="MainPanel_MouseMove">
             <Rectangle.Effect>
@@ -32,11 +45,11 @@
             <material:PackIcon Kind="Refresh" Width="24" Height="24" Foreground="{DynamicResource PrimaryHueMidForegroundBrush}"/>
         </Button>
 
-        <Button x:Name="BtnRun" Style="{DynamicResource MaterialDesignFloatingActionButton}" HorizontalAlignment="Right" Width="36" Height="36" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="{x:Null}" Cursor="Arrow" Margin="0,4,100,0" ToolTip="Run script" Click="BtnRun_Click">
+        <Button x:Name="BtnRun" Style="{DynamicResource MaterialDesignFloatingActionButton}" HorizontalAlignment="Right" Width="36" Height="36" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="{x:Null}" Cursor="Arrow" Margin="0,4,100,0" ToolTip="Run script (Ctrl+R)" Click="BtnRun_Click">
             <material:PackIcon Kind="Play" Width="24" Height="24" Foreground="{DynamicResource PrimaryHueMidBrush}"/>
         </Button>
 
-        <Button x:Name="BtnMake" Style="{DynamicResource MaterialDesignFloatingActionButton}" HorizontalAlignment="Right" Width="36" Height="36" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="{x:Null}" Cursor="Arrow" Margin="0,4,64,0" ToolTip="Gen executable" Click="BtnMake_Click">
+        <Button x:Name="BtnMake" Style="{DynamicResource MaterialDesignFloatingActionButton}" HorizontalAlignment="Right" Width="36" Height="36" VerticalAlignment="Top" Background="{x:Null}" BorderBrush="{x:Null}" Cursor="Arrow" Margin="0,4,64,0" ToolTip="Gen executable (Ctrl+B)" Click="BtnMake_Click">
             <material:PackIcon Kind="ArrowDownBold" Width="24" Height="24" Foreground="{DynamicResource SecondaryAccentBrush}"/>
         </Button>
 

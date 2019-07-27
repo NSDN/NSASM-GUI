@@ -91,7 +91,7 @@ namespace NSASM_GUI
 
         private void BtnMake_Click(object sender, RoutedEventArgs e)
         {
-            const int OFFSET = 0x131E40, LENGTH = 0x8000;
+            const int OFFSET = 0x132A40, LENGTH = 0x8000;
             var bin = Properties.Resources.nsasmBin;
 
             __print("Original size: {0:G} KiB\n", bin.Length / 1024.0F);
@@ -131,6 +131,16 @@ namespace NSASM_GUI
         {
             CodeBox.Clear();
             OutputBox.Clear();
+        }
+
+        private void MakeCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            BtnMake_Click(null, null);
+        }
+
+        private void RunCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            BtnRun_Click(null, null);
         }
     }
 }
